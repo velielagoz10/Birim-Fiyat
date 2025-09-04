@@ -493,7 +493,7 @@
                         </div>
                     </div>
                     <div class="unit-price">
-                        ${product.unitPrice.toFixed(3)} TL / ${getUnitLabel(product.unit)}
+                        ${product.unitPrice.toFixed(2)} TL / ${getUnitLabel(product.unit)}
                     </div>
                 </div>
             `).join('');
@@ -513,7 +513,7 @@
                     <td><strong>${product.name}</strong> ${index === 0 ? '🏆' : ''}</td>
                     <td>${product.price.toFixed(2)} TL</td>
                     <td>${product.quantity} ${getUnitLabel(product.unit)}</td>
-                    <td><strong>${product.unitPrice.toFixed(3)} TL/${getUnitLabel(product.unit)}</strong></td>
+                    <td><strong>${product.unitPrice.toFixed(2)} TL/${getUnitLabel(product.unit)}</strong></td>
                     <td><button class="delete-btn" onclick="removeProduct(${product.id})">🗑️ Sil</button></td>
                 </tr>
             `).join('');
@@ -531,19 +531,19 @@
             document.getElementById('stats').innerHTML = `
                 <div class="stat-item">
                     <div class="stat-label">En Ucuz</div>
-                    <div class="stat-value">${cheapest.toFixed(3)} TL</div>
+                    <div class="stat-value">${cheapest.toFixed(2)} TL</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-label">En Pahalı</div>
-                    <div class="stat-value">${expensive.toFixed(3)} TL</div>
+                    <div class="stat-value">${expensive.toFixed(2)} TL</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-label">Ortalama</div>
-                    <div class="stat-value">${average.toFixed(3)} TL</div>
+                    <div class="stat-value">${average.toFixed(2)} TL</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-label">Tasarruf</div>
-                    <div class="stat-value">${savings.toFixed(3)} TL</div>
+                    <div class="stat-value">${savings.toFixed(2)} TL</div>
                 </div>
             `;
         }
