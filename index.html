@@ -153,7 +153,7 @@
 <header>
   <h1>Feyzanur'un Alışveriş Listesi <span class="spin">🌸</span></h1>
   <p class="hello">Hoş geldin <b>Feyzanur</b> 💐 — <span id="greet"></span></p>
-  <p class="hello"><span id="liveDot"></span><span id="liveLabel">Canlı bağlantı yok — sadece bu telefonda kayıtlı</span></p>
+  <p class="hello"><span id="liveDot"></span><span id="liveLabel">Canlı bağlantı yok</span></p>
   <div class="tabs">
     <button class="tab on" data-t="pazar"><span class="n zero" id="nPazar">0</span>PAZAR</button>
     <button class="tab" data-t="market"><span class="n zero" id="nMarket">0</span>MARKET</button>
@@ -330,7 +330,7 @@
     var dot = document.getElementById("liveDot"), lbl = document.getElementById("liveLabel");
     if(!dot) return;
     dot.className = on ? "on" : "";
-    lbl.textContent = on ? "Canlı bağlı — karşı taraf anında görüyor" : "Canlı bağlantı yok — sadece bu telefonda kayıtlı";
+    lbl.textContent = on ? "Canlı bağlı" : "Canlı bağlantı yok";
   }
 
   function load(){
