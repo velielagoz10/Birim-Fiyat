@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Alışveriş">
+<meta name="theme-color" content="#fdf3ee">
+<title>Feyzanur'un Alışveriş Listesi</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='58' font-size='70' text-anchor='middle' dominant-baseline='middle'%3E%E2%9D%A4%EF%B8%8F%3C/text%3E%3C/svg%3E" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+<style>
+  :root{
+    --bg:#fdf3ee; --card:#fffaf7; --ink:#3d2b2b; --muted:#94776f;
+    --line:#f0ddd4; --accent:#c9527a; --accent-soft:#fce7ee;
+    --warn:#c2593f; --chip:#f8e6de;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *,*::before,*::after{box-sizing:inherit}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#20161a; --card:#2b1e23; --ink:#f4e6e6; --muted:#bfa0a4;
+      --line:#3e2c33; --accent:#f08cae; --accent-soft:#3b232d;
+      --warn:#e59b7f; --chip:#33242a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#20161a; --card:#2b1e23; --ink:#f4e6e6; --muted:#bfa0a4;
+    --line:#3e2c33; --accent:#f08cae; --accent-soft:#3b232d;
+    --warn:#e59b7f; --chip:#33242a;
+  }
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Quicksand","Segoe UI",Roboto,-apple-system,Helvetica,Arial,sans-serif;
+    font-size:16px;line-height:1.45;padding-bottom:110px;
+  }
+  header{
+    position:sticky;top:env(safe-area-inset-top,0px);z-index:20;
+    background:var(--bg);border-bottom:1px solid var(--line);
+    padding:10px 12px 0;
+  }
+  h1{
+    font-family:"Caveat","Segoe UI",cursive;font-size:30px;line-height:1.1;
+    margin:4px 0 2px;color:var(--accent);font-weight:700;
+  }
+  .hello{font-size:13px;color:var(--muted);margin:0 0 10px}
+  .hello b{color:var(--ink)}
+  .tabs{display:flex;gap:6px}
+  .tab{
+    flex:1;padding:11px 6px;border:1px solid var(--line);border-bottom:none;
+    background:var(--chip);color:var(--muted);border-radius:10px 10px 0 0;
+    font-size:14px;font-weight:600;cursor:pointer;text-align:center;
+  }
+  .tab.on{background:var(--card);color:var(--ink);border-color:var(--accent);box-shadow:inset 0 3px 0 var(--accent)}
+  .tab .n{display:inline-block;min-width:20px;padding:0 5px;margin-right:4px;
+    background:var(--accent);color:#fff;border-radius:20px;font-size:12px}
+  .tab .n.zero{background:var(--muted)}
+  .bar{display:flex;gap:8px;padding:10px 0}
+  input[type=search]{
+    flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+    background:var(--card);color:var(--ink);font-size:15px;min-width:0;
+  }
+  .btn{
+    padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+    background:var(--card);color:var(--ink);font-size:14px;cursor:pointer;
+    font-weight:600;white-space:nowrap;
+  }
+  .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.ghost{background:transparent;color:var(--muted)}
+  main{padding:8px 12px}
+  ul{list-style:none;margin:0;padding:0}
+  li.row{
+    display:flex;align-items:center;gap:10px;background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:6px;
+    animation-duration:.5s;
+  }
+  li.row.on{border-color:var(--accent);background:var(--accent-soft)}
+  @keyframes selectPop{ 0%{transform:scale(1)} 45%{transform:scale(1.02)} 100%{transform:scale(1)} }
+  li.row.pop{animation:selectPop .3s ease-out}
+  @keyframes spinFlower{ from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  h1 .spin{display:inline-block;animation:spinFlower 4s linear infinite}
+  .name{flex:1;font-size:15px;font-weight:600;word-break:break-word;transition:color .25s}
+  input.name{border:none;background:transparent;color:inherit;font-family:inherit;padding:2px 0;min-width:0}
+  input.name:focus{outline:none;border-bottom:1px dashed var(--accent)}
+  li.row.on .name{color:var(--accent)}
+  .check-pop{display:inline-block}
+  .box{animation-duration:.35s}
+  #liveDot{
+    display:inline-block;width:9px;height:9px;border-radius:50%;
+    background:var(--muted);margin-right:5px;vertical-align:middle;
+  }
+  #liveDot.on{background:var(--accent);animation:pulseDot 1.4s infinite}
+  @keyframes pulseDot{0%{box-shadow:0 0 0 0 rgba(201,82,122,.5)}70%{box-shadow:0 0 0 7px rgba(201,82,122,0)}100%{box-shadow:0 0 0 0 rgba(201,82,122,0)}}
+  #liveLabel{font-size:11px;color:var(--muted)}
+  li.row input[type=checkbox]{width:26px;height:26px;flex:none;accent-color:var(--accent)}
+  .name{flex:1;font-size:15px;font-weight:600;word-break:break-word}
+  li.row.on .name{color:var(--accent)}
+  .qty{
+    width:96px;flex:none;padding:8px;border:1px solid var(--line);border-radius:8px;
+    background:var(--bg);color:var(--ink);font-size:14px;text-align:center;
+  }
+  .del{border:none;background:none;color:var(--warn);font-size:20px;cursor:pointer;padding:0 4px}
+  .empty{color:var(--muted);text-align:center;padding:30px 10px;font-size:14px}
+  footer{
+    position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);
+    border-top:1px solid var(--line);padding:10px 12px;
+    padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));
+    display:flex;gap:8px;align-items:center;
+  }
+  footer .count{flex:1;font-size:13px;color:var(--muted);line-height:1.2}
+  footer .count b{color:var(--ink);font-size:16px}
+  .modal{
+    position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.5);
+    display:none;align-items:center;justify-content:center;padding:16px;
+  }
+  .modal.show{display:flex}
+  .box{
+    background:var(--card);border-radius:14px;padding:16px;width:100%;max-width:420px;
+    max-height:80vh;overflow:auto;border:1px solid var(--line);
+  }
+  .box h2{margin:0 0 10px;font-size:16px}
+  .box label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+  .box input[type=text],.box input[type=tel],.box select{
+    width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;
+    background:var(--bg);color:var(--ink);font-size:15px;
+  }
+  pre.prev{
+    background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;
+    font-size:12px;white-space:pre-wrap;word-break:break-word;max-height:220px;overflow:auto;
+  }
+  .box .acts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .box .acts .btn{flex:1;text-align:center}
+  .hint{font-size:12px;color:var(--muted);margin-top:8px}
+  #printArea{display:none}
+
+  /* ---- köşe menüsü ---- */
+  .menuBtn{
+    position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:12px;
+    width:38px;height:38px;border:1px solid var(--line);border-radius:10px;
+    background:var(--card);color:var(--ink);font-size:18px;cursor:pointer;z-index:25;
+  }
+  .menuBadge{
+    position:absolute;top:-5px;right:-5px;background:var(--accent);color:#fff;
+    font-size:10px;min-width:16px;height:16px;border-radius:10px;
+    display:none;align-items:center;justify-content:center;padding:0 3px;font-weight:700;
+  }
+  .menuDrop{
+    position:absolute;top:calc(52px + env(safe-area-inset-top,0px));right:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:12px;
+    box-shadow:0 8px 22px rgba(0,0,0,.18);display:flex;flex-direction:column;
+    overflow:hidden;z-index:26;min-width:180px;
+    opacity:0;visibility:hidden;pointer-events:none;
+    transform:translateY(-6px) scale(.97);transform-origin:top right;
+    transition:opacity .2s ease,transform .2s ease,visibility .2s;
+  }
+  .menuDrop.show{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0) scale(1)}
+  .menuItem{
+    display:flex;align-items:center;gap:8px;justify-content:space-between;
+    padding:12px 14px;border:none;background:var(--card);color:var(--ink);
+    font-size:14px;font-weight:600;cursor:pointer;text-align:left;border-bottom:1px solid var(--line);
+  }
+  .menuItem:last-child{border-bottom:none}
+  .menuItem.on{color:var(--accent)}
+  .menuItemBadge{
+    background:var(--accent);color:#fff;font-size:11px;min-width:18px;height:18px;
+    border-radius:10px;display:none;align-items:center;justify-content:center;padding:0 5px;
+  }
+
+  /* ---- sohbet ---- */
+  #chatView{padding:8px 12px}
+  .chatNameRow{padding:0}
+  .chatNameRow input{
+    width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10px;
+    background:var(--card);color:var(--ink);font-size:14px;
+  }
+  .chatHint{font-size:11px;color:var(--muted);margin:-4px 0 10px}
+  .chatMsgs{display:flex;flex-direction:column;gap:8px}
+  .msg{
+    max-width:82%;padding:8px 10px;border-radius:14px 14px 14px 4px;
+    background:var(--card);border:1px solid var(--line);font-size:14px;align-self:flex-start;
+  }
+  .msg.mine{align-self:flex-end;background:var(--accent-soft);border-color:var(--accent);border-radius:14px 14px 4px 14px}
+  .msg .who{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:2px}
+  .msg .txt{word-break:break-word;white-space:pre-wrap}
+  .msg .meta{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-top:4px}
+  .msg .time{font-size:10px;color:var(--muted)}
+  .msg .delMsg{border:none;background:none;color:var(--warn);font-size:11px;font-weight:700;cursor:pointer;padding:0}
+  .msg .chatImg{
+    display:block;max-width:100%;max-height:260px;border-radius:10px;margin:2px 0 4px;
+    cursor:pointer;object-fit:cover;
+  }
+  #chatFooter{gap:6px;flex-direction:column;align-items:stretch}
+  .chatFooterRow{display:flex;gap:8px;align-items:center}
+  #chatFooter input{
+    flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+    background:var(--card);color:var(--ink);font-size:15px;min-width:0;
+  }
+  #chatImgBtn{flex:none;font-size:18px;line-height:1;padding:10px 12px}
+  #chatImgBtn:disabled{opacity:.5;cursor:default}
+  .imgPreviewRow{
+    display:none;align-items:center;gap:8px;padding:4px 2px;
+    border:1px dashed var(--line);border-radius:10px;background:var(--accent-soft);
+  }
+  .imgPreviewRow img{width:44px;height:44px;object-fit:cover;border-radius:8px;flex:none}
+  .imgPreviewName{flex:1;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .imgPreviewRow button{border:none;background:none;color:var(--warn);font-size:16px;font-weight:700;cursor:pointer;padding:0 6px}
+  .imgBox{padding:10px}
+  .imgBox img{width:100%;border-radius:10px;display:block;max-height:70vh;object-fit:contain;background:var(--bg)}
+  .imgBox .acts{margin-top:10px}
+
+  @media print{
+    header,footer,.modal,main{display:none !important}
+    body{background:#fff;color:#000;padding:0}
+    #printArea{display:block;padding:16px;font-size:13px}
+    #printArea h2{font-size:16px;margin:14px 0 6px;border-bottom:1px solid #000}
+    #printArea table{width:100%;border-collapse:collapse}
+    #printArea td{border-bottom:1px solid #bbb;padding:5px 4px}
+    #printArea td.q{text-align:right;white-space:nowrap;font-weight:bold}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <button class="menuBtn" id="menuBtn" aria-label="Menü">☰<span class="menuBadge" id="menuBadge"></span></button>
+  <div class="menuDrop" id="menuDrop">
+    <button class="menuItem on" data-view="liste">🏠 Ana Menü</button>
+    <button class="menuItem" data-view="sohbet">💬 Sohbet<span class="menuItemBadge" id="sohbetItemBadge"></span></button>
+  </div>
+  <h1>Feyzanur'un Alışveriş Listesi <span class="spin">🌸</span></h1>
+  <p class="hello">Hoş geldin <b>Feyzanur</b> 💐 — <span id="greet"></span></p>
+  <p class="hello"><span id="liveDot"></span><span id="liveLabel">Canlı bağlantı yok</span></p>
+  <div class="tabs" id="listTabs">
+    <button class="tab on" data-t="pazar"><span class="n zero" id="nPazar">0</span>PAZAR</button>
+    <button class="tab" data-t="market"><span class="n zero" id="nMarket">0</span>MARKET</button>
+  </div>
+  <div class="bar" id="listBar">
+    <input type="search" id="q" placeholder="Ürün ara…">
+    <button class="btn ghost" id="sortBtn" title="İşaretlileri üste sırala">🔽 Sırala</button>
+    <button class="btn" id="addBtn">+ Ürün</button>
+    <button class="btn ghost" id="clearBtn">Temizle</button>
+  </div>
+</header>
+
+<main id="listView"><ul id="list"></ul></main>
+
+<main id="chatView" style="display:none">
+  <p class="chatHint">Yazdığın mesajlar herkese açık görünür. Sadece kendi mesajlarını silebilirsin.</p>
+  <div class="chatMsgs" id="chatMsgs"><div class="empty">Henüz mesaj yok. İlk mesajı sen yaz! 💬</div></div>
+</main>
+
+<footer id="listFooter">
+  <div class="count"><b id="selCount">0</b> ürün seçildi 🧺<br><span id="subCount"></span></div>
+  <button class="btn" id="printBtn">PDF</button>
+  <button class="btn primary" id="sendBtn">💌 GÖNDER</button>
+</footer>
+
+<footer id="chatFooter" style="display:none">
+  <div class="chatNameRow">
+    <input type="text" id="chatName" placeholder="Adınız (mesajın yanında görünecek)" maxlength="30">
+  </div>
+  <div class="imgPreviewRow" id="imgPreviewRow">
+    <img id="imgPreviewThumb" alt="">
+    <span class="imgPreviewName" id="imgPreviewName"></span>
+    <button type="button" id="imgPreviewCancel" title="Kaldır">✕</button>
+  </div>
+  <div class="chatFooterRow">
+    <button type="button" class="btn ghost" id="chatImgBtn" title="Fotoğraf ekle">📷</button>
+    <input type="file" id="chatImgInput" accept="image/*" style="display:none">
+    <input type="text" id="chatMsg" placeholder="Mesajını yaz…" maxlength="500">
+    <button class="btn primary" id="chatSendBtn">Gönder</button>
+  </div>
+</footer>
+
+<div class="modal" id="sendModal">
+  <div class="box">
+    <h2>Listeyi Gönder 💌</h2>
+    <label>WhatsApp numarası (ülke kodu ile, örn. 905321234567)</label>
+    <input type="tel" id="phone" placeholder="905xxxxxxxxx">
+    <label>Gönderilecek liste</label>
+    <select id="scope">
+      <option value="both">Her iki liste</option>
+      <option value="pazar">Sadece PAZAR</option>
+      <option value="market">Sadece MARKET</option>
+    </select>
+    <label>Önizleme</label>
+    <pre class="prev" id="prev"></pre>
+    <div class="acts">
+      <button class="btn primary" id="waBtn">WhatsApp</button>
+      <button class="btn" id="copyBtn">Kopyala</button>
+      <button class="btn ghost" id="closeSend">Kapat</button>
+    </div>
+    <div class="hint">WhatsApp açılmazsa "Kopyala" ile metni alıp sohbete yapıştırabilirsiniz.</div>
+  </div>
+</div>
+
+<div class="modal" id="printModal">
+  <div class="box">
+    <h2>PDF Al 🖨️</h2>
+    <label>Hangi liste yazdırılsın?</label>
+    <select id="printScope">
+      <option value="both">Her iki liste</option>
+      <option value="pazar">Sadece PAZAR</option>
+      <option value="market">Sadece MARKET</option>
+    </select>
+    <div class="acts">
+      <button class="btn primary" id="printGo">Devam Et</button>
+      <button class="btn ghost" id="closePrint">Kapat</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="addModal">
+  <div class="box">
+    <h2>Yeni Ürün Ekle ✨</h2>
+    <label>Ürün adı</label>
+    <input type="text" id="newName" placeholder="Örn. KARNABAHAR">
+    <label>Miktar</label>
+    <input type="text" id="newQty" placeholder="Örn. 3 KG">
+    <label>Hangi liste?</label>
+    <select id="newList">
+      <option value="pazar">PAZAR</option>
+      <option value="market">MARKET</option>
+    </select>
+    <div class="acts">
+      <button class="btn primary" id="saveNew">Ekle</button>
+      <button class="btn ghost" id="closeAdd">Kapat</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="imgModal">
+  <div class="box imgBox">
+    <img id="imgModalPic" alt="Fotoğraf">
+    <div class="acts"><button class="btn ghost" id="closeImgModal">Kapat</button></div>
+  </div>
+</div>
+
+<div id="printArea"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var BASE = {
+    pazar: [
+      ["PEYNİR ( SULU )","8 KG"],["SİYAH ZEYTİN","4 KG"],["TURŞU ZEYTİN","1 KG"],
+      ["ZEYTİN YAĞ","1 TENEKE"],["BÜYÜK SOĞAN","7 KG"],["KÜÇÜK SOĞAN","5 KG"],
+      ["BÜYÜK PATATES","16 KG"],["KÜÇÜK PATATES","5 KG"],["SARIMSAK","1 KG"],
+      ["MEYVE ( ÜZÜM )","10 KG"],["DOMATES","10 KG"],["SALATALIK","5 KG"],
+      ["SARI BİBER","6 KG"],["HAVUÇ","1 KG"],["PIRASA","10 KG"],["TAZE FASÜLYE","6 KG"],
+      ["LİMON","1 KG"],["LOR PEYNİR ( KAHVALTILIK )","500 GR"],["LOR PEYNİR ( BÖREKLİK )","500 GR"],
+      ["MARUL","3 ADET"],["ROKA","1 BAĞ"],["MAYDANOZ","2 BAĞ"],["DEREOTU","1 BAĞ"],
+      ["KARA LAHANA","2 ADET"],["PATLICAN","15 KG"],["ISPANAK","10 KG"],["KİMYON","500 GR"],
+      ["KARABİBER","500 GR"],["TATLI PUL BİBER","1000 GR"],["KIRMIZI TOZ BİBER","500 GR"],
+      ["KEKİK","100 GR"],["KIZARTMALIK KABAK","2 KG"],["SALÇALIK KIRMIZI BİBER","10 KG"],
+      ["KIYMA ( NORMAL )","4 KG"],["ET ( KUŞBAŞI )","4 KG"],["YOĞURT","4 ADET"],
+      ["TAVUK ( İNCİK )","20 ADET"]
+    ],
+    market: [
+      ["PEYNİR ( VAKUMLU )","7 KG"],["LEĞEN HELVA ( KARE ! )","1 ADET"],
+      ["PİRİNÇ (TORUN OSMANCIK)","20 KG"],["BULGUR","3 KG"],["ARPA ŞEHRİYE","5 KG"],
+      ["KIRMIZI MERCİMEK","3 KG"],["KEMALPAŞA (GÜVENAL)","5 PAKET"],["TEL KADAYIF","5 PAKET"],
+      ["TAHİN (ERTUĞRUL)","1 KG"],["PEKMEZ","2 KG"],["SU 0,5 LT 12 Lİ PAKET ( SULTAN )","10 KOLİ"],
+      ["PEÇETE (TENO)","2 PAKET"],["PAKET PİKNİK ÇİKOLATA","1 KOLİ"],["PAKET PİKNİK BAL","1 KOLİ"],
+      ["PAKET PİKNİK PEKMEZ","1 KOLİ"],["UN","5 KG"],["KURU FASÜLYE ( KİLOLUK )","3 KG"],
+      ["BEYAZ NOHUT ( BÜYÜK TANELİ )","3 KG"],["BURGU MAKARNA ( KARTAL )","5 KG"],
+      ["SPAGETTİ","5 PAKET"],["BEZELYE (TAT)","2 ADET"],["PİKNİK ÇİLEK REÇELİ","1 PAKET"],
+      ["TAVUK BULYON ( BİZİM KOVA )","5 KG"],["PRİL ( 4LT )","3 ADET"],["YAĞ TEMİZLEYİCİ","1 ADET"],
+      ["PORÇÖZ ( 4 LT. BİDON )","1 BİDON"],["SADE SODA","1 KOLİ"],["MISIR UNU","1 PAKET"],
+      ["KÖFTE HARCI","5 PAKET"],["A4 KAĞIDI","5 PAKET"],["MANGAL KÖMÜRÜ","4 PAKET"],
+      ["ÇAMAŞIR MAKİNASI DETERJANI 15 KG","1 ADET"],["HAVLU PEÇETE 12'Lİ","1 ADET"],
+      ["TUZ (ASAF)","2 PAKET"],["TOZ ŞEKER","20 KG"],["KÜP ŞEKER","2 PAKET"],
+      ["BULAŞIK SÜNGERİ","5 ADET"],["YÜZEY TEMİZLEYİCİ ( BİNGO MASAL )","1 ADET"],
+      ["TEK KREM DETERJAN","1 ADET"],["DOMESTOS ( 4 LT BİDON )","1 ADET"],["CAMSİL","3 ADET"],
+      ["YUMUŞATICI (5T.)","1 ADET (3,2 LT.)"],["SÜTLÜ DİBEK KAHVESİ","2 PAKET"],
+      ["TÜRK KAHVESİ ( BİRBEN )","5 PAKET"],["ACE (4LT.)","1 ADET"],
+      ["JUMBO ÇÖP POŞETİ ( KOROPLAST ! )","3 PAKET"],["SAF ÜZÜM SİRKESİ ( TARİŞ )","4 LT"],
+      ["CERRAHİ ELDİVEN ( S & M )","1 PAKET"],["CERRAHİ MASKE","1 PAKET"],["YUMURTA","75 ADET"],
+      ["MİKROFİBER TEMİZLİK BEZİ 4 LÜ","5 ADET"],["BÜYÜK BOY ÇÖP POŞETİ","4 ADET"],
+      ["SANA YAĞ","3 ADET"],["SIVI YAĞ ( KULA )","1 TENEKE"],
+      ["SIVI EL SABUNU ( DURU ZEYTİN YAĞLI )","2 ADET"],["SALÇA YEMEKLİK","5 KG (1 ADET)"],
+      ["ÇAY ( DOĞUŞ )","1 KOLİ"],["NESCAFE 2.1 ARADA","20 ADET"],["NESCAFE 3.1 ARADA","20 ADET"]
+    ]
+  };
+
+  var KEY = "alisveris_v1";
+  var state = { pazar:{}, market:{}, extra:{pazar:[],market:[]}, phone:"" };
+  var tab = "pazar";
+
+  /* ============ CANLI BAĞLANTI (Firebase) ============
+     Kullanmak için: console.firebase.google.com adresinden ücretsiz bir
+     proje aç, Realtime Database ekle (test modunda), "Project settings"
+     > "Web app" içindeki config nesnesini aşağıya yapıştır.
+     Boş bırakırsan site normal şekilde, sadece bu telefonda çalışmaya
+     devam eder — hiçbir şey bozulmaz.                                    */
+  var firebaseConfig = {
+    apiKey: "AIzaSyCF8WUjQmbWT-EuR7fn_jOJ-indB6-kRQ8",
+    databaseURL: "https://feyzanur-9b274-default-rtdb.firebaseio.com",
+    projectId: "feyzanur-9b274"
+  };
+  var fbReady = false, fbRef = null, fbApplying = false;
+  try{
+    if(firebaseConfig.apiKey && firebaseConfig.databaseURL && window.firebase){
+      firebase.initializeApp(firebaseConfig);
+      fbRef = firebase.database().ref("alisveris_listesi/durum");
+      fbReady = true;
+    }
+  }catch(e){ fbReady = false; }
+
+  /* ============ GİRİŞ LOGLAMA ============
+     Her açılışta cihaza özel bir kimlik (ilk seferde üretilir, o telefonda
+     kalıcı kalır) ve tarih/saat Firebase'e yazılır. Kontrol paneli
+     (admin.html) bu kayıtları okur.                                        */
+  function cihazId(){
+    var id = localStorage.getItem("cihaz_id");
+    if(!id){
+      id = "cihaz-" + Math.random().toString(36).slice(2,8);
+      try{ localStorage.setItem("cihaz_id", id); }catch(e){}
+    }
+    return id;
+  }
+  function girisiLogla(){
+    if(!fbReady) return;
+    try{
+      var d = new Date();
+      function p(n){return n<10?"0"+n:""+n;}
+      var tarihSaat = p(d.getDate())+"."+p(d.getMonth()+1)+"."+d.getFullYear()+" "+p(d.getHours())+":"+p(d.getMinutes());
+      firebase.database().ref("alisveris_listesi/loglar").push({
+        cihaz: cihazId(),
+        tarihSaat: tarihSaat,
+        zaman: d.getTime()
+      });
+    }catch(e){}
+  }
+  function degisikligiLogla(urun, liste, islem){
+    if(!fbReady) return;
+    try{
+      var d = new Date();
+      function p(n){return n<10?"0"+n:""+n;}
+      var tarihSaat = p(d.getDate())+"."+p(d.getMonth()+1)+"."+d.getFullYear()+" "+p(d.getHours())+":"+p(d.getMinutes());
+      firebase.database().ref("alisveris_listesi/degisiklikler").push({
+        cihaz: cihazId(), urun: urun, liste: liste, islem: islem,
+        tarihSaat: tarihSaat, zaman: d.getTime()
+      });
+    }catch(e){}
+  }
+
+  /* ============ SOHBET ============ */
+  var sohbetRef = null;
+  if(fbReady){
+    try{ sohbetRef = firebase.database().ref("alisveris_listesi/sohbet").limitToLast(200); }catch(e){}
+  }
+  var currentView = "liste";
+  var lastSohbetSnapshot = [];
+  var chatNameEl, chatMsgEl, chatMsgsEl, chatSendBtn;
+
+  function sohbetGorulenYukle(){
+    try{ return parseInt(localStorage.getItem("sohbet_gorulen")||"0",10); }catch(e){ return 0; }
+  }
+  function sohbetGorulenKaydet(n){
+    try{ localStorage.setItem("sohbet_gorulen", String(n)); }catch(e){}
+  }
+  function tarihSaatUret(){
+    var d=new Date();
+    function p(n){return n<10?"0"+n:""+n;}
+    return p(d.getDate())+"."+p(d.getMonth()+1)+"."+d.getFullYear()+" "+p(d.getHours())+":"+p(d.getMinutes());
+  }
+
+  function refreshSohbetBadge(){
+    var total = lastSohbetSnapshot.length;
+    var fark = Math.max(0, total - sohbetGorulenYukle());
+    var b1 = document.getElementById("menuBadge");
+    var b2 = document.getElementById("sohbetItemBadge");
+    if(fark>0 && currentView!=="sohbet"){
+      b1.style.display="flex"; b1.textContent = fark>9?"9+":fark;
+      b2.style.display="flex"; b2.textContent = fark>9?"9+":fark;
+    } else {
+      b1.style.display="none"; b2.style.display="none";
+    }
+  }
+  function sohbetGoruldu(){
+    sohbetGorulenKaydet(lastSohbetSnapshot.length);
+    refreshSohbetBadge();
+  }
+
+  function renderChat(){
+    if(!chatMsgsEl) return;
+    var myId = cihazId();
+    if(!lastSohbetSnapshot.length){
+      chatMsgsEl.innerHTML = '<div class="empty">Henüz mesaj yok. İlk mesajı sen yaz! 💬</div>';
+      return;
+    }
+    chatMsgsEl.innerHTML = "";
+    lastSohbetSnapshot.forEach(function(k){
+      var mine = k.cihaz === myId;
+      var div = document.createElement("div");
+      div.className = "msg" + (mine ? " mine" : "");
+      var who = document.createElement("div");
+      who.className="who"; who.textContent = k.isim || "İsimsiz";
+      div.appendChild(who);
+      if(k.resim){
+        var img = document.createElement("img");
+        img.className = "chatImg"; img.src = k.resim; img.alt = "Fotoğraf";
+        img.addEventListener("click", function(){
+          document.getElementById("imgModalPic").src = k.resim;
+          document.getElementById("imgModal").classList.add("show");
+        });
+        div.appendChild(img);
+      }
+      if(k.mesaj){
+        var txt = document.createElement("div");
+        txt.className="txt"; txt.textContent = k.mesaj;
+        div.appendChild(txt);
+      }
+      var meta = document.createElement("div");
+      meta.className="meta";
+      var time = document.createElement("span");
+      time.className="time"; time.textContent = k.tarihSaat || "";
+      meta.appendChild(time);
+      if(mine){
+        var del = document.createElement("button");
+        del.className="delMsg"; del.textContent="Sil";
+        del.addEventListener("click", function(){
+          if(!confirm("Bu mesajı silmek istiyor musun?")) return;
+          if(sohbetRef) firebase.database().ref("alisveris_listesi/sohbet/"+k._key).remove();
+        });
+        meta.appendChild(del);
+      }
+      div.appendChild(meta);
+      chatMsgsEl.appendChild(div);
+    });
+    var lastMsg = chatMsgsEl.lastElementChild;
+    if(lastMsg){ lastMsg.scrollIntoView({block:"end"}); }
+  }
+
+  function sohbetGonder(){
+    var isim = (chatNameEl.value||"").trim();
+    var mesaj = (chatMsgEl.value||"").trim();
+    if(!isim){ alert("Lütfen önce adını yaz."); chatNameEl.focus(); return; }
+    if(!mesaj && !pendingImage) return;
+    try{ localStorage.setItem("sohbet_isim", isim); }catch(e){}
+    if(!fbReady || !sohbetRef){ alert("Canlı bağlantı yok, mesaj gönderilemiyor."); return; }
+    var payload = {
+      isim: isim, cihaz: cihazId(),
+      tarihSaat: tarihSaatUret(), zaman: new Date().getTime()
+    };
+    if(mesaj) payload.mesaj = mesaj;
+    if(pendingImage) payload.resim = pendingImage;
+    firebase.database().ref("alisveris_listesi/sohbet").push(payload);
+    chatMsgEl.value = "";
+    resimSecimiTemizle();
+    chatMsgEl.focus();
+  }
+
+  /* ---- sohbet: fotoğraf ekleme ---- */
+  var pendingImage = null;
+  var chatImgBtn, chatImgInput, imgPreviewRow, imgPreviewThumb, imgPreviewName, imgPreviewCancel;
+
+  function resimSikistir(file, cb){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var img = new Image();
+      img.onload = function(){
+        var maxW = 1000;
+        var scale = Math.min(1, maxW / img.width);
+        var w = Math.max(1, Math.round(img.width * scale));
+        var h = Math.max(1, Math.round(img.height * scale));
+        var canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, w, h);
+        var quality = 0.72;
+        var dataUrl = canvas.toDataURL("image/jpeg", quality);
+        while(dataUrl.length > 700000 && quality > 0.35){
+          quality -= 0.1;
+          dataUrl = canvas.toDataURL("image/jpeg", quality);
+        }
+        cb(dataUrl);
+      };
+      img.onerror = function(){ cb(null); };
+      img.src = e.target.result;
+    };
+    reader.onerror = function(){ cb(null); };
+    reader.readAsDataURL(file);
+  }
+
+  function resimSecimiTemizle(){
+    pendingImage = null;
+    if(imgPreviewRow) imgPreviewRow.style.display = "none";
+    if(imgPreviewThumb) imgPreviewThumb.src = "";
+  }
+
+  function setLive(on){
+    var dot = document.getElementById("liveDot"), lbl = document.getElementById("liveLabel");
+    if(!dot) return;
+    dot.className = on ? "on" : "";
+    lbl.textContent = on ? "Canlı bağlı" : "Canlı bağlantı yok";
+  }
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(raw){
+        var d = JSON.parse(raw);
+        if(d && typeof d === "object"){
+          state.pazar = d.pazar || {};
+          state.market = d.market || {};
+          state.extra = d.extra || {pazar:[],market:[]};
+          state.extra.pazar = state.extra.pazar || [];
+          state.extra.market = state.extra.market || [];
+          state.phone = d.phone || "";
+        }
+      }
+    }catch(e){ /* depolama yoksa boş başla */ }
+  }
+  function save(){
+    try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+    if(fbReady && !fbApplying){
+      fbRef.set(state).catch(function(){});
+    }
+  }
+
+  function items(which){
+    var out = BASE[which].map(function(x,i){
+      var id = which+"_"+i;
+      var s = state[which][id];
+      var name = (s && s.n) ? s.n : x[0];
+      return {id:id, name:name, def:x[1]};
+    });
+    state.extra[which].forEach(function(x,i){
+      out.push({id:which+"_x"+i, name:x.name, def:x.qty, custom:true, idx:i});
+    });
+    return out;
+  }
+  function rec(which,id){
+    var r = state[which][id];
+    if(!r){ r = state[which][id] = {c:false,q:null}; }
+    return r;
+  }
+  function counts(which){
+    var n=0; items(which).forEach(function(it){ if(state[which][it.id] && state[which][it.id].c) n++; });
+    return n;
+  }
+
+  var listEl = document.getElementById("list");
+  var qEl = document.getElementById("q");
+  var sirali = false;
+
+  function render(){
+    var term = qEl.value.trim().toLocaleUpperCase("tr");
+    var arr = items(tab).filter(function(it){
+      return !term || it.name.toLocaleUpperCase("tr").indexOf(term) > -1;
+    });
+    if(sirali){
+      arr = arr.map(function(it,i){ return {it:it, i:i, on: rec(tab,it.id).c}; })
+                .sort(function(a,b){ return (b.on - a.on) || (a.i - b.i); })
+                .map(function(w){ return w.it; });
+    }
+    listEl.innerHTML = "";
+    if(!arr.length){
+      listEl.innerHTML = '<div class="empty">Ürün bulunamadı.</div>';
+    }
+    arr.forEach(function(it){
+      var r = rec(tab,it.id);
+      var li = document.createElement("li");
+      li.className = "row" + (r.c ? " on" : "");
+      li.dataset.id = it.id;
+
+      var cb = document.createElement("input");
+      cb.type="checkbox"; cb.checked=!!r.c;
+      cb.addEventListener("change", function(){
+        var checking = cb.checked;
+        rec(tab,it.id).c = checking; save(); render();
+        degisikligiLogla(it.name, tab, checking ? "işaretledi" : "kaldırdı");
+        var newLi = listEl.querySelector('li[data-id="'+it.id+'"]');
+        if(newLi && checking){
+          newLi.classList.add("pop");
+          setTimeout(function(){ newLi.classList.remove("pop"); }, 300);
+        }
+      });
+
+      var nm = document.createElement("input");
+      nm.type="text"; nm.className="name"; nm.value = it.name;
+      nm.addEventListener("change", function(){
+        var val = nm.value.trim() || it.name;
+        if(it.custom){ state.extra[tab][it.idx].name = val; }
+        else { rec(tab,it.id).n = val; }
+        save(); render();
+      });
+
+      var qt = document.createElement("input");
+      qt.type="text"; qt.className="qty";
+      qt.value = (r.q === null || r.q === undefined) ? it.def : r.q;
+      qt.addEventListener("change", function(){
+        rec(tab,it.id).q = qt.value.trim() || it.def; save();
+      });
+
+      li.appendChild(cb); li.appendChild(nm); li.appendChild(qt);
+
+      if(it.custom){
+        var del = document.createElement("button");
+        del.className="del"; del.textContent="✕"; del.title="Sil";
+        del.addEventListener("click", function(){
+          state.extra[tab].splice(it.idx,1);
+          delete state[tab][it.id];
+          save(); render();
+        });
+        li.appendChild(del);
+      }
+      listEl.appendChild(li);
+    });
+    updateCounts();
+  }
+
+  function updateCounts(){
+    var p = counts("pazar"), m = counts("market");
+    var np=document.getElementById("nPazar"), nm=document.getElementById("nMarket");
+    np.textContent=p; nm.textContent=m;
+    np.className = "n" + (p?"":" zero"); nm.className = "n" + (m?"":" zero");
+    document.getElementById("selCount").textContent = p+m;
+    document.getElementById("subCount").textContent = "Pazar "+p+" · Market "+m;
+  }
+
+  function selected(which){
+    return items(which).filter(function(it){
+      var r = state[which][it.id]; return r && r.c;
+    }).map(function(it){
+      var r = state[which][it.id];
+      return { name:it.name, qty:(r.q===null||r.q===undefined)?it.def:r.q };
+    });
+  }
+
+  function today(){
+    var d=new Date();
+    function p(n){return n<10?"0"+n:""+n;}
+    return p(d.getDate())+"."+p(d.getMonth()+1)+"."+d.getFullYear();
+  }
+
+  function buildText(scope){
+    var out = [], any=false;
+    function block(which,title){
+      var s = selected(which);
+      if(!s.length) return;
+      any=true;
+      out.push("*"+title+"* ("+s.length+" ürün)");
+      s.forEach(function(x){ out.push("• "+x.name+" — "+x.qty); });
+      out.push("");
+    }
+    out.push("🌸 *FEYZANUR – ALIŞVERİŞ LİSTESİ* – "+today());
+    out.push("");
+    if(scope!=="market") block("pazar","PAZAR LİSTESİ");
+    if(scope!=="pazar") block("market","MARKET LİSTESİ");
+    if(!any) out.push("(Hiç ürün işaretlenmedi)");
+    return out.join("\n").trim();
+  }
+
+  /* ---- sekmeler ---- */
+  Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(b){
+    b.addEventListener("click", function(){
+      Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(x){x.classList.remove("on");});
+      b.classList.add("on"); tab=b.getAttribute("data-t"); render();
+      listEl.classList.remove("animate__fadeIn"); void listEl.offsetWidth;
+      listEl.classList.add("animate__animated","animate__fadeIn");
+    });
+  });
+  qEl.addEventListener("input", render);
+
+  var sortBtn = document.getElementById("sortBtn");
+  sortBtn.addEventListener("click", function(){
+    sirali = !sirali;
+    sortBtn.classList.toggle("primary", sirali);
+    sortBtn.classList.toggle("ghost", !sirali);
+    sortBtn.textContent = sirali ? "🔼 Sıralı" : "🔽 Sırala";
+    render();
+  });
+
+  /* ---- temizle ---- */
+  document.getElementById("clearBtn").addEventListener("click", function(){
+    if(!confirm("Bu listedeki tüm işaretler silinsin mi?\n(Miktarlar da sıfırlanır)")) return;
+    state[tab] = {}; save(); render();
+  });
+
+  /* ---- ürün ekle ---- */
+  var addModal = document.getElementById("addModal");
+  document.getElementById("addBtn").addEventListener("click", function(){
+    document.getElementById("newName").value="";
+    document.getElementById("newQty").value="";
+    document.getElementById("newList").value=tab;
+    addModal.classList.add("show");
+    var box = addModal.querySelector(".box");
+    box.classList.remove("animate__zoomIn"); void box.offsetWidth;
+    box.classList.add("animate__animated","animate__zoomIn");
+  });
+  document.getElementById("closeAdd").addEventListener("click", function(){ addModal.classList.remove("show"); });
+  document.getElementById("saveNew").addEventListener("click", function(){
+    var n=document.getElementById("newName").value.trim();
+    var q=document.getElementById("newQty").value.trim();
+    var w=document.getElementById("newList").value;
+    if(!n){ alert("Ürün adı yazın."); return; }
+    state.extra[w].push({name:n.toLocaleUpperCase("tr"), qty:q||"1 ADET"});
+    save(); addModal.classList.remove("show");
+    tab=w;
+    Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(x){
+      x.classList.toggle("on", x.getAttribute("data-t")===w);
+    });
+    qEl.value=""; render();
+    window.scrollTo(0, document.body.scrollHeight);
+  });
+
+  /* ---- gönder ---- */
+  var sendModal = document.getElementById("sendModal");
+  var phoneEl = document.getElementById("phone");
+  var scopeEl = document.getElementById("scope");
+  var prevEl = document.getElementById("prev");
+
+  function refreshPrev(){ prevEl.textContent = buildText(scopeEl.value).replace(/\*/g,""); }
+
+  document.getElementById("sendBtn").addEventListener("click", function(){
+    phoneEl.value = state.phone || "";
+    refreshPrev();
+    sendModal.classList.add("show");
+    var box = sendModal.querySelector(".box");
+    box.classList.remove("animate__zoomIn"); void box.offsetWidth;
+    box.classList.add("animate__animated","animate__zoomIn");
+  });
+  scopeEl.addEventListener("change", refreshPrev);
+  document.getElementById("closeSend").addEventListener("click", function(){ sendModal.classList.remove("show"); });
+
+  document.getElementById("waBtn").addEventListener("click", function(){
+    var ph = phoneEl.value.replace(/[^0-9]/g,"");
+    state.phone = ph; save();
+    var txt = encodeURIComponent(buildText(scopeEl.value));
+    var url = ph ? ("https://wa.me/"+ph+"?text="+txt) : ("https://wa.me/?text="+txt);
+    var w = window.open(url, "_blank");
+    if(!w){ window.location.href = url; }
+    var btn = document.getElementById("waBtn");
+    btn.classList.add("animate__animated","animate__tada");
+    setTimeout(function(){ btn.classList.remove("animate__animated","animate__tada"); }, 800);
+  });
+
+  document.getElementById("copyBtn").addEventListener("click", function(){
+    var t = buildText(scopeEl.value);
+    var btn = document.getElementById("copyBtn");
+    function ok(){ btn.textContent="Kopyalandı ✓"; setTimeout(function(){btn.textContent="Kopyala";},1500); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(ok, fallback);
+    } else { fallback(); }
+    function fallback(){
+      var ta=document.createElement("textarea"); ta.value=t; document.body.appendChild(ta);
+      ta.select(); try{ document.execCommand("copy"); ok(); }catch(e){ alert("Kopyalanamadı."); }
+      document.body.removeChild(ta);
+    }
+  });
+
+  /* ---- PDF / yazdır ---- */
+  var printModal = document.getElementById("printModal");
+  var printScopeEl = document.getElementById("printScope");
+
+  document.getElementById("printBtn").addEventListener("click", function(){
+    printModal.classList.add("show");
+  });
+  document.getElementById("closePrint").addEventListener("click", function(){
+    printModal.classList.remove("show");
+  });
+
+  document.getElementById("printGo").addEventListener("click", function(){
+    var scope = printScopeEl.value;
+    var pa = document.getElementById("printArea");
+    var html = "<h1 style='font-size:18px;margin:0'>Feyzanur'un Alışveriş Listesi – "+today()+"</h1>";
+    [["pazar","PAZAR LİSTESİ"],["market","MARKET LİSTESİ"]].forEach(function(p){
+      if(scope!=="both" && scope!==p[0]) return;
+      var s = selected(p[0]);
+      if(!s.length) return;
+      html += "<h2>"+p[1]+" ("+s.length+" ürün)</h2><table>";
+      s.forEach(function(x){
+        html += "<tr><td>"+x.name+"</td><td class='q'>"+x.qty+"</td></tr>";
+      });
+      html += "</table>";
+    });
+    if(html.indexOf("<h2>")<0) html += "<p>Hiç ürün işaretlenmedi.</p>";
+    pa.innerHTML = html;
+    printModal.classList.remove("show");
+    window.print();
+  });
+
+  /* ---- köşe menüsü & görünüm değiştirme ---- */
+  var menuBtn = document.getElementById("menuBtn");
+  var menuDrop = document.getElementById("menuDrop");
+  menuBtn.addEventListener("click", function(e){
+    e.stopPropagation();
+    menuDrop.classList.toggle("show");
+  });
+  document.addEventListener("click", function(e){
+    if(menuDrop.classList.contains("show") && !menuDrop.contains(e.target) && e.target!==menuBtn){
+      menuDrop.classList.remove("show");
+    }
+  });
+
+  function setView(v){
+    currentView = v;
+    var liste = (v === "liste");
+    document.getElementById("listTabs").style.display = liste ? "" : "none";
+    document.getElementById("listBar").style.display = liste ? "" : "none";
+    document.getElementById("listView").style.display = liste ? "" : "none";
+    document.getElementById("listFooter").style.display = liste ? "flex" : "none";
+    document.getElementById("chatView").style.display = liste ? "none" : "";
+    document.getElementById("chatFooter").style.display = liste ? "none" : "flex";
+    Array.prototype.forEach.call(document.querySelectorAll(".menuItem"), function(b){
+      b.classList.toggle("on", b.getAttribute("data-view") === v);
+    });
+    menuDrop.classList.remove("show");
+    var activeMain = document.getElementById(liste ? "listView" : "chatView");
+    activeMain.classList.remove("animate__animated","animate__fadeIn","animate__faster");
+    void activeMain.offsetWidth;
+    activeMain.classList.add("animate__animated","animate__fadeIn","animate__faster");
+    if(v === "sohbet"){
+      renderChat();
+      sohbetGoruldu();
+      setTimeout(function(){
+        var lastMsg = chatMsgsEl && chatMsgsEl.lastElementChild;
+        if(lastMsg){ lastMsg.scrollIntoView({block:"end"}); }
+      }, 30);
+    }
+  }
+  Array.prototype.forEach.call(document.querySelectorAll(".menuItem"), function(b){
+    b.addEventListener("click", function(){ setView(b.getAttribute("data-view")); });
+  });
+
+  /* ---- sohbet alanları ---- */
+  chatNameEl = document.getElementById("chatName");
+  chatMsgEl = document.getElementById("chatMsg");
+  chatMsgsEl = document.getElementById("chatMsgs");
+  chatSendBtn = document.getElementById("chatSendBtn");
+  chatImgBtn = document.getElementById("chatImgBtn");
+  chatImgInput = document.getElementById("chatImgInput");
+  imgPreviewRow = document.getElementById("imgPreviewRow");
+  imgPreviewThumb = document.getElementById("imgPreviewThumb");
+  imgPreviewName = document.getElementById("imgPreviewName");
+  imgPreviewCancel = document.getElementById("imgPreviewCancel");
+  try{ chatNameEl.value = localStorage.getItem("sohbet_isim") || ""; }catch(e){}
+  chatNameEl.addEventListener("change", function(){
+    try{ localStorage.setItem("sohbet_isim", chatNameEl.value.trim()); }catch(e){}
+  });
+  chatSendBtn.addEventListener("click", sohbetGonder);
+  chatMsgEl.addEventListener("keydown", function(e){
+    if(e.key === "Enter"){ e.preventDefault(); sohbetGonder(); }
+  });
+  chatImgBtn.addEventListener("click", function(){ chatImgInput.click(); });
+  chatImgInput.addEventListener("change", function(){
+    var f = chatImgInput.files && chatImgInput.files[0];
+    chatImgInput.value = "";
+    if(!f) return;
+    if(!/^image\//.test(f.type)){ alert("Lütfen bir fotoğraf dosyası seçin."); return; }
+    chatImgBtn.disabled = true; var eski = chatImgBtn.textContent; chatImgBtn.textContent = "⏳";
+    resimSikistir(f, function(dataUrl){
+      chatImgBtn.disabled = false; chatImgBtn.textContent = eski;
+      if(!dataUrl){ alert("Fotoğraf işlenemedi, tekrar deneyin."); return; }
+      if(dataUrl.length > 900000){ alert("Bu fotoğraf çok büyük. Daha küçük veya daha az detaylı bir fotoğraf deneyin."); return; }
+      pendingImage = dataUrl;
+      imgPreviewThumb.src = dataUrl;
+      imgPreviewName.textContent = f.name || "Fotoğraf";
+      imgPreviewRow.style.display = "flex";
+    });
+  });
+  imgPreviewCancel.addEventListener("click", resimSecimiTemizle);
+
+  if(sohbetRef){
+    sohbetRef.on("value", function(snap){
+      var arr = [];
+      snap.forEach(function(c){ var v = c.val() || {}; v._key = c.key; arr.push(v); });
+      lastSohbetSnapshot = arr;
+      renderChat();
+      if(currentView === "sohbet"){ sohbetGoruldu(); } else { refreshSohbetBadge(); }
+    });
+  }
+
+  document.getElementById("closeImgModal").addEventListener("click", function(){
+    document.getElementById("imgModal").classList.remove("show");
+  });
+
+  /* ---- modalları dışına tıklayınca kapat ---- */
+  [sendModal, addModal, printModal, document.getElementById("imgModal")].forEach(function(m){
+    m.addEventListener("click", function(e){ if(e.target===m) m.classList.remove("show"); });
+  });
+
+  var h = new Date().getHours();
+  var g = h < 11 ? "günaydın, kolay gelsin ☕" : (h < 18 ? "iyi günler, ellerine sağlık 🌿" : "iyi akşamlar 🌙");
+  document.getElementById("greet").textContent = g + " · " + today();
+
+  load(); render(); girisiLogla();
+  setLive(false);
+
+  if(fbReady){
+    fbRef.on("value", function(snap){
+      var d = snap.val();
+      if(!d) return; // henüz veri yok, ilk yazan bu cihaz olacak
+      fbApplying = true;
+      state.pazar = d.pazar || {};
+      state.market = d.market || {};
+      state.extra = d.extra || {pazar:[],market:[]};
+      state.extra.pazar = state.extra.pazar || [];
+      state.extra.market = state.extra.market || [];
+      state.phone = d.phone || state.phone;
+      try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+      render();
+      fbApplying = false;
+      setLive(true);
+    }, function(){ setLive(false); });
+  }
+})();
+</script>
+</body>
+</html>
