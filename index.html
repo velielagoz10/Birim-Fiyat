@@ -923,7 +923,7 @@
     var menu = document.createElement("div");
     menu.className = "delMenu";
     var m1 = document.createElement("button"); m1.type = "button";
-    m1.innerHTML = "<span>🙈</span> Benden sil";
+    m1.innerHTML = "<span></span> Benden sil";
     m1.addEventListener("click", function(){
       menu.classList.remove("show");
       if(!confirm("Bu mesaj yalnızca SENİN ekranından silinsin mi?\n(Diğerlerinde görünmeye devam eder)")) return;
@@ -932,7 +932,7 @@
     menu.appendChild(m1);
     if(herkestenAcik){
       var m2 = document.createElement("button"); m2.type = "button"; m2.className = "herkesten";
-      m2.innerHTML = "<span>🌍</span> Herkesten sil";
+      m2.innerHTML = "<span></span> Herkesten sil";
       m2.addEventListener("click", function(){
         menu.classList.remove("show");
         if(!confirm("Bu mesaj HERKESİN ekranından silinsin mi?")) return;
